@@ -6,15 +6,32 @@ import React, {useState , useEffect} from "react";
     const News = () =>{
         const [articles ,setArticles] = useState([]);
 
-        useEffect(() => {
-            const fetchNews = async () =>{
-                let url = 'https://newsapi.org/v2/top-headlines?country=us&apiKey=236a41042c8e4b2d96b32efaa7252a44';
-             let data =  await fetch(url);
-             let parsedData = await data.json();
-             setArticles(parsedData.articles);   
-            };
-            fetchNews();
-        },[]);
+       useEffect(() => {
+  const fetchNews = async () => {
+    try {
+      const url = 'https://newsapi.org/v2/top-headlines?country=us&apiKey=236a41042c8e4b2d96b32efaa7252a44';
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        console.error("API Error:", response.status, response.statusText);
+        return; // exit if API returns error
+      }
+
+      const parsedData = await response.json();
+
+      if (parsedData.articles) {
+        setArticles(parsedData.articles);
+      } else {
+        console.error("No articles found in", parsedData);
+      }
+    } catch (error) {
+      console.error("Fetch failed:", error);
+    }
+  };
+
+  fetchNews();
+}, []);
+
   
   
     return (
